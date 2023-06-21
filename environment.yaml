@@ -1,0 +1,13 @@
+name: stockai
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pandas
+  - pytorch
+  - boto3
+  - scikit-learn
+  - jupyterlab
+  - matplotlib
+  - plotly
