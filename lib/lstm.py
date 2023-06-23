@@ -5,12 +5,17 @@ from torch.autograd import Variable
 
 class LSTM(nn.Module):
 
-    def __init__(self, num_classes, input_size, hidden_size, num_layers, dropout=0):
+    def __init__(
+        self, num_classes, input_size, hidden_size, num_layers,
+        dropout=0, gpu_device=None
+    ):
         super().__init__()
         self.num_classes = num_classes  # output size
         self.num_layers = num_layers  # number of recurrent layers in the lstm
         self.input_size = input_size  # input size
         self.hidden_size = hidden_size  # neurons in each lstm layer
+
+        self.device = torch.device(gpu_device or "cpu")
 
         # LSTM model
         self.lstm = nn.LSTM(
@@ -34,8 +39,9 @@ class LSTM(nn.Module):
 
         # propagate input through LSTM
         output, (hn, cn) = (
-            self.lstm(x, (h_0, c_0))  # (input, hidden, and internal state)
+            self.lstm(x, (h_0, c_0))
         )
+
         hn = hn.view(
             -1, self.hidden_size
         )  # reshaping the data for Dense layer next
