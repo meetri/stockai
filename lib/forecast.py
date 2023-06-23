@@ -9,27 +9,29 @@ from lib.helpers import SequenceDataset, x_split_sequences, split_sequences
 
 class StockForecaster:
 
-    def __init__(self, epochs=200, lr=0.001, gpu_device=None):
-        self.epochs = epochs
-        self.learning_rate = lr
+    def __init__(self, **kwargs):  # epochs=200, lr=0.001, gpu_device=None):
+        self.epochs = kwargs.get("epochs", 200)
+        self.learning_rate = kwargs.get("lr", 0.001)
 
         # FIXME: Bug with loss_fn.backward() when using "mps" device
-        gpu_device = "cpu"
+        self.gpu_device = kwargs.get("gpu_device")
 
-        self.gpu_device = gpu_device
-        self.device = torch.device(gpu_device or "cpu")
+        self.gpu_device = "cpu"
+        self.device = torch.device(self.gpu_device or "cpu")
 
-        self.train_on = ["Open", "High", "Low", "Close", "Volume"]
-        self.target = "Close"
+        self.train_on = kwargs.get(
+            "train_on", ["Open", "High", "Low", "Close", "Volume"])
+
+        self.target = kwargs.get("target", "Close")
 
         self.input_size = len(self.train_on) - 1  # number of features
-        self.hidden_size = 4  # number of features in hidden state
-        self.num_layers = 1  # number of stacked lstm layers
-        self.num_classes = 50  # number of output classes
+        self.hidden_size = kwargs.get("hidden_size", 40)
+        self.num_layers = kwargs.get("num_layers", 1)
+        self.num_classes = kwargs.get("num_classes", 50)
 
-        self.num_training_sequences = 100
-        self.num_predictions = 50
-        self.percent_for_training = 0.9
+        self.num_training_sequences = kwargs.get("training_sequences", 100)
+        self.num_predictions = kwargs.get("num_predictions", 50)
+        self.percent_for_training = kwargs.get("percent_for_training", 0.9)
 
         self.total_samples = None
         self.test_samples = None
@@ -58,11 +60,11 @@ class StockForecaster:
         self.loss_fn = None
         self.optimizer = None
 
-    def load(self, csvpath: str = "spydata.csv"):
+    def load(self, csvpath: str = "spydata.csv", start_at: int = 0):
         self.raw_data = pd.read_csv(
             csvpath, index_col='Date', parse_dates=True)
 
-        self.raw_data = self.raw_data[self.train_on]
+        self.raw_data = self.raw_data[self.train_on][start_at:]
 
         # calculate train / test sample count
         self.total_samples = len(self.raw_data[self.target].values)
@@ -76,7 +78,7 @@ class StockForecaster:
         # Y contains only `Close`
         X, y = (
             self.raw_data.drop(columns=[self.target]),
-            self.raw_data.Close.values.reshape(-1, 1)
+            self.raw_data[self.target].values.reshape(-1, 1)
         )
 
         self.X_train = self.ss.fit_transform(X)
@@ -149,6 +151,36 @@ class StockForecaster:
             self.lstm.parameters(),
             lr=self.learning_rate
         )
+
+    def train2(self):
+        loss_data = []
+        test_loss_data = []
+        for epoch in range(self.epochs):
+            self.lstm.train()
+            for x, y in self.trainloader:
+                print("x")
+                self.optimizer.zero_grad()
+
+                outputs = self.lstm(x).squeeze().to(self.device)
+                loss = self.loss_fn(
+                    outputs, self.y_train_tensors
+                ).to(self.device)
+
+                loss_data.append(loss.item())
+                print(loss_data)
+
+                loss.backward()
+                self.optimizer.step()
+
+            self.lstm.eval()
+            for x, y in self.testloader:
+                print("y")
+                with torch.no_grad():
+                    output = self.lstm(x)
+                    error = self.loss_fn(output, y)
+                    test_loss_data.append(error.item())
+
+        return loss_data, test_loss_data
 
     def train(self):
         """
