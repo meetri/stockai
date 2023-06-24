@@ -1,10 +1,9 @@
 import pandas as pd
 import torch
 from torch.autograd import Variable
-from torch.utils.data import DataLoader, random_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from lib.lstm import LSTM
-from lib.helpers import SequenceDataset, x_split_sequences, split_sequences
+from lib.helpers import split_sequences
 
 
 class StockForecaster:
@@ -103,31 +102,6 @@ class StockForecaster:
 
         self.create_tensors()
 
-    def prepare2(self):
-        # prepare data for training...
-
-        self.normalize_data()
-
-        sequences = x_split_sequences(
-            self.X_train, self.y_train,
-            self.num_training_sequences, self.num_predictions
-        )
-
-        dataset = SequenceDataset(sequences)
-
-        train_len = int(len(dataset)*self.percent_for_training)
-        lens = [train_len, len(dataset)-train_len]
-
-        train_ds, test_ds = random_split(dataset, lens)
-
-        self.trainloader = DataLoader(
-            train_ds, batch_size=16, shuffle=True, drop_last=True
-        )
-
-        self.testloader = DataLoader(
-            test_ds, batch_size=16, shuffle=True, drop_last=True
-        )
-
     def create_tensors(self):
         # split data into train / test sets
         X_train = self.X_ss[:-self.test_samples]
@@ -158,36 +132,6 @@ class StockForecaster:
             self.lstm.parameters(),
             lr=self.learning_rate
         )
-
-    def train2(self):
-        loss_data = []
-        test_loss_data = []
-        for epoch in range(self.epochs):
-            self.lstm.train()
-            for x, y in self.trainloader:
-                print("x")
-                self.optimizer.zero_grad()
-
-                outputs = self.lstm(x).squeeze().to(self.device)
-                loss = self.loss_fn(
-                    outputs, self.y_train_tensors
-                ).to(self.device)
-
-                loss_data.append(loss.item())
-                print(loss_data)
-
-                loss.backward()
-                self.optimizer.step()
-
-            self.lstm.eval()
-            for x, y in self.testloader:
-                print("y")
-                with torch.no_grad():
-                    output = self.lstm(x)
-                    error = self.loss_fn(output, y)
-                    test_loss_data.append(error.item())
-
-        return loss_data, test_loss_data
 
     def train(self):
         """
