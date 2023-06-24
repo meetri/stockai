@@ -25,12 +25,13 @@ class StockForecaster:
 
         self.input_size = len(self.train_on) - 1  # number of features
         self.hidden_size = kwargs.get("hidden_size", 40)
-        self.num_layers = kwargs.get("num_layers", 1)
-        self.num_classes = kwargs.get("num_classes", 50)
 
         self.num_training_sequences = kwargs.get("training_sequences", 100)
         self.num_predictions = kwargs.get("num_predictions", 50)
         self.percent_for_training = kwargs.get("percent_for_training", 0.9)
+
+        self.num_layers = kwargs.get("num_layers", 1)
+        self.num_classes = kwargs.get("num_classes", self.num_predictions)
 
         self.total_samples = None
         self.test_samples = None
