@@ -61,10 +61,17 @@ class StockForecaster:
         self.optimizer = None
 
     def load(self, csvpath: str = "spydata.csv", start_at: int = 0):
-        self.raw_data = pd.read_csv(
-            csvpath, index_col='Date', parse_dates=True)
+
+        if csvpath.endswith("csv"):
+            self.raw_data = pd.read_csv(
+                csvpath, index_col='Date', parse_dates=True)
+        elif csvpath.endswith("json"):
+            self.raw_data = pd.read_json(
+                csvpath)
 
         self.raw_data = self.raw_data[self.train_on][start_at:]
+
+        print(self.raw_data.columns)
 
         # calculate train / test sample count
         self.total_samples = len(self.raw_data[self.target].values)
