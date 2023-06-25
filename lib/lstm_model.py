@@ -1,6 +1,6 @@
 import pandas as pd
 import torch
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 
 from lib.lstm import LSTM
 
@@ -24,7 +24,8 @@ class LstmModel():
 
         self.targets = kwargs.get("target", ["Close"])
 
-        self.input_size = len(self.train_on)  # number of features
+        # number of features
+        self.input_size = len(self.train_on) - len(self.targets)
         self.hidden_size = kwargs.get("hidden_size", 40)
 
         self.num_training_seq = kwargs.get("num_training_seq", 100)
@@ -51,6 +52,7 @@ class LstmModel():
         self.raw_data = None
         self.mm = MinMaxScaler()
         self.ss = StandardScaler()
+        self.rs = RobustScaler()
         self.lstm = None
         self.loss_fn = None
         self.optimizer = None
