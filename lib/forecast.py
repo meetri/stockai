@@ -28,7 +28,7 @@ class StockForecaster:
 
         self.num_training_sequences = kwargs.get("training_sequences", 100)
         self.num_predictions = kwargs.get("num_predictions", 50)
-        self.percent_for_training = kwargs.get("percent_for_training", 0.9)
+        self.percent_for_training = kwargs.get("percent_for_training", 0.8)
 
         self.num_layers = kwargs.get("num_layers", 1)
         self.num_classes = kwargs.get("num_classes", self.num_predictions)

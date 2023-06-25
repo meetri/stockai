@@ -1,3 +1,5 @@
+import requests
+from json import dumps
 import numpy as np
 from torch.utils.data import Dataset
 import torch
@@ -35,3 +37,5 @@ def split_sequences(input_sequences, output_sequence, n_steps_in, n_steps_out):
         )
         X.append(seq_x), y.append(seq_y)
     return np.array(X), np.array(y)
+
+

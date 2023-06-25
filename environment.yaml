@@ -12,3 +12,6 @@ dependencies:
   - matplotlib
   - plotly
   - requests
+  - polygon
+  - yfinance
+  - requests_cache
