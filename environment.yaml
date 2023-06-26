@@ -1,6 +1,6 @@
 name: stockai
 channels:
-  - conda-forge
+  - default
 dependencies:
   - python=3.9
   - pip
@@ -12,7 +12,14 @@ dependencies:
   - matplotlib
   - plotly
   - requests
-  - polygon
   - yfinance
   - requests_cache
-  - pytorch-forecasting
+  # - conda-forge::pytorch-forecasting
+  # - conda-forge::pytorch-forecasting[mqf2]
+  # - conda-forge::torchdata
+  # - conda-forge::torchmetrics
+  - ipywidgets
+  - pip:
+    - lightning
+    - pytorch-forecasting
+    - fastapi

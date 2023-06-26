@@ -12,7 +12,7 @@ class StockForecast(LstmModel):
         X = self.raw_data.drop(columns=self.targets)
         y = self.raw_data[self.targets]
 
-        self.X_train = self.rs.fit_transform(X)
+        self.X_train = self.ss.fit_transform(X)
         self.y_train = self.mm.fit_transform(y)
 
     def sequence(self, batch_size=64, shuffle=False):

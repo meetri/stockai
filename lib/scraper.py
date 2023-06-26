@@ -1,5 +1,3 @@
-from os import getenv
-import polygon
 import yfinance as yf
 import requests_cache
 
@@ -38,16 +36,3 @@ class StockScraper():
             end=self.end,
             prepost=False
         )
-
-    def from_poly(self):
-        polykey = getenv("POLYKEY")
-        if polykey:
-            self.client = polygon.StocksClient(polykey)
-            self.data = self.client.get_aggregate_bars(
-                symbol=self.ticker, from_date=self.start, to_date=self.end,
-                adjusted=True, sort="asc", limit=50000, run_parallel=True,
-                multiplier=1, timespan='day', full_range=True, warnings=False
-            )
-
-        else:
-            raise Exception("polygon api token missing from env:POLYKEY")
