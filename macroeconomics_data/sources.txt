@@ -1,0 +1,4 @@
+https://fred.stlouisfed.org/series/EFFR
+https://fred.stlouisfed.org/series/UMCSENT
+https://fred.stlouisfed.org/series/UNRATE
+
