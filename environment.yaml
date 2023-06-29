@@ -25,3 +25,4 @@ dependencies:
     - pytorch-forecasting
     - fastapi
     - haar-pytorch
+    - PyWavelets
