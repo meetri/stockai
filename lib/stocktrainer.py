@@ -39,8 +39,8 @@ class StockTrainer():
         self.device = kwargs.get("device", "cpu")
         self.torch_device = torch.device(self.device)
 
+        self.time_idx = kwargs.get("time_idx", "time_idx")
         self.group_id = kwargs.get("group_id", "Ticker")
-        self.group_ids = [self.group_id]
 
         self.target = kwargs.get("target", "Close")
 
@@ -52,17 +52,15 @@ class StockTrainer():
         self.max_epoch = kwargs.get("max_epoch", 50)
         self.batch_size = kwargs.get("batch_size", 32)
 
-        self.time_idx = kwargs.get("time_idx", "time_idx")
-
     def create_model(self):
 
         training_cutoff = (
-            self.data["time_idx"].max() - self.max_prediction_length)
+            self.data[self.time_idx].max() - self.max_prediction_length)
 
         self.training = TimeSeriesDataSet(
             data=self.data[lambda x: x.time_idx <= training_cutoff],
             time_idx=self.time_idx,
-            target="Close",
+            target=self.target,
             group_ids=[self.group_id],
             weight=None,
 
@@ -83,10 +81,12 @@ class StockTrainer():
             variable_groups={},
             lags={},
 
+            allow_missing_timesteps=True,
             constant_fill_strategy={},
 
             target_normalizer=GroupNormalizer(
-                groups=self.group_ids, transformation="softplus"
+                groups=[self.group_id], transformation="softplus",
+                scale_by_group=True
             ),
 
             add_relative_time_idx=True,  # add as feature
@@ -119,8 +119,8 @@ class StockTrainer():
     def train(self, **kwargs):
         early_stop_callback = EarlyStopping(
             monitor="val_loss",
-            min_delta=1e-6,
-            patience=10,
+            min_delta=kwargs.get("es_min_delta", 1e-6),
+            patience=kwargs.get("es_patience", 10),
             verbose=False,
             mode="min"
         )
