@@ -1,9 +1,10 @@
 import pandas as pd
 import torch
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from torch.autograd import Variable
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from lib.lstm import LSTM
+
 from lib.helpers import split_sequences
+from lib.lstm import LSTM
 
 
 class StockForecaster:

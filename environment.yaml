@@ -14,6 +14,7 @@ dependencies:
   - requests
   - yfinance
   - requests_cache
+  - conda-forge::ta-lib
   # - conda-forge::pytorch-forecasting
   # - conda-forge::pytorch-forecasting[mqf2]
   # - conda-forge::torchdata
@@ -23,3 +24,4 @@ dependencies:
     - lightning
     - pytorch-forecasting
     - fastapi
+    - haar-pytorch

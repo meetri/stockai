@@ -1,5 +1,5 @@
-import yfinance as yf
 import requests_cache
+import yfinance as yf
 
 
 class StockScraper():

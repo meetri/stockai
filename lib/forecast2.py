@@ -1,9 +1,8 @@
+import numpy as np
 from torch.utils.data import DataLoader
 
-import numpy as np
-
-from lib.lstm_model import LstmModel
 from lib.helpers import SequenceDataset
+from lib.lstm_model import LstmModel
 
 
 class StockForecast(LstmModel):

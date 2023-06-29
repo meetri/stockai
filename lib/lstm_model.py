@@ -1,6 +1,6 @@
 import pandas as pd
 import torch
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
 from lib.lstm import LSTM
 

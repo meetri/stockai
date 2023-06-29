@@ -1,10 +1,10 @@
-import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-from torch.utils.data import Dataset
 import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
 import torch
 import torch.nn as nn
-import plotly.graph_objects as go
+from sklearn.preprocessing import MinMaxScaler
+from torch.utils.data import Dataset
 
 
 # split a multivariate sequence past, future samples (X and y)
