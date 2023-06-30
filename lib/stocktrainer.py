@@ -154,6 +154,7 @@ class StockTrainer():
             hidden_continuous_size=kwargs.get("hidden_continuous_size", 12),
             loss=QuantileLoss(),
             log_interval=10,
+            # lstm_layers=1,
             # “ranger”, “sgd”, “adam”,
             # “adamw” or class name of optimizer in
             optimizer=kwargs.get("optimizer", "Ranger"),

@@ -61,6 +61,11 @@ def get_stock_data(
     stock_data["CloseWT-noise"][-1:] = stock_data["CloseWT-noise"][-2:-1]
 
     stock_data["Date"] = pd.to_datetime(stock_data["Date"])
+
+    stock_data["time_index"] = stock_data["Date"].astype(int)
+    stock_data["time_index"] = (
+        stock_data["time_index"] / 1000000000 / 86400).astype(int)
+    stock_data["time_index"] -= stock_data["time_index"].min()
     # stock_data.head()
 
     return stock_data
